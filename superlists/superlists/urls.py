@@ -25,5 +25,5 @@ import lists.views
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
-    url('', view=lists.views.homepage, name="home"),
+    url('', view=lists.views.home_page, name="home"),
 ]
