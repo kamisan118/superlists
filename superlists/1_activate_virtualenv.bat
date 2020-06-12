@@ -1,1 +1,1 @@
-..\tdd366\Scripts\activate.bat
+.\tdd366\Scripts\activate.bat
