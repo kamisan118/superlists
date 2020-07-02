@@ -5,7 +5,7 @@ import time
 
 class NewVisitorTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Firefox(log_path=r"C:\DBoxs\prim\Dropbox\repo\tdd-lern-proj\p1\geckodriver.log")
 
     def tearDown(self) -> None:
         self.browser.quit()

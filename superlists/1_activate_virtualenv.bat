@@ -1,1 +1,1 @@
-.\tdd366\Scripts\activate.bat
+P:\local-python-virtualenvs\superlists\Scripts\activate.bat

@@ -11,7 +11,7 @@ django.setup()
 
 class SmokeTest(TestCase):
     def test_bad_math(self):
-        self.assertEqual(1 + 1, 3)
+        self.assertNotEqual(1 + 1, 3)
 
 class HomePageTest(TestCase):
     def test_root_url_resolves_to_home_page_view(self):
@@ -32,3 +32,15 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         response = home_page(request)
         self.assertEqual(response.content.decode(), expected_html) # 記得reponse要先decode才能比對
+
+    def test_home_page_can_save_a_POST_request(self):
+        request = HttpRequest()
+        request.method = "POST"
+        request.POST['item_text'] = 'A new list item'
+        response = home_page(request)
+
+        # expected_html = render_to_string('home.html', {'new_text_item': 'A new list item'}, request=request) # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
+        expected_html = render_to_string('home.html', {'new_text_item': 'A new list item'})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
+
+        # 怎辦--------------csrf token val.不一樣@@
+        self.assertEqual(response.content.decode(), expected_html)
