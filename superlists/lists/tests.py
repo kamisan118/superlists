@@ -2,12 +2,12 @@ from django.test import TestCase
 from django.urls import resolve
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpRequest
-from .views import home_page
+from lists.views import home_page
 
 import os
 import django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "UserAdmin.settings")
-django.setup()
+
+from pmlib.django_helper import html_tool
 
 class SmokeTest(TestCase):
     def test_bad_math(self):
@@ -39,8 +39,11 @@ class HomePageTest(TestCase):
         request.POST['item_text'] = 'A new list item'
         response = home_page(request)
 
-        # expected_html = render_to_string('home.html', {'new_text_item': 'A new list item'}, request=request) # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
+        # 沒加入 request 的話會沒有 csrf token
         expected_html = render_to_string('home.html', {'new_text_item': 'A new list item'})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
+        # 就算加入了request, csrf token val.仍會每次render都給不一樣, so得將form remove from 我們的test
+        decoded_respone = html_tool.forms_remover(response.content.decode())
+        expected_html = html_tool.forms_remover(expected_html)
 
-        # 怎辦--------------csrf token val.不一樣@@
-        self.assertEqual(response.content.decode(), expected_html)
+        self.assertEqual(decoded_respone, expected_html)
+

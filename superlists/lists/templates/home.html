@@ -9,8 +9,9 @@
     <form method="POST">
         <input name="item_text" id="id_new_item", placeholder="Enter a to-do item">
         {% comment %}
-            若加入 {% csrf_token %} 會讓test過不去...
+            若加入 {% csrf_token %} 會讓test過不去...不論是用django test跑 還是unittest跑 都一樣結果, 每次render的時候 csrf_token 都不同
         {% endcomment %}
+        {% csrf_token %}
     </form>
 
     <table id="id_list_table">
