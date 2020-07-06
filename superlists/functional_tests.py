@@ -31,6 +31,11 @@ class NewVisitorTest(unittest.TestCase):
         # When she hits enter, the page updates, and now the page lists
         # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
+
+        # 沒裝這個的話會碰到 `selenium.common.exceptions.StaleElementReferenceException`
+        # 因為你撈到前一個 page 的 id, 但 page 被 refresh 結果就變成 DOM 消失 找不到
+        time.sleep(5)
+
         table = self.browser.find_element_by_id('id_list_table')
 
         rows = table.find_elements_by_tag_name('tr')

@@ -31,7 +31,11 @@ class HomePageTest(TestCase):
         expected_html = render_to_string('home.html') # 建立ground truth!
         request = HttpRequest()
         response = home_page(request)
-        self.assertEqual(response.content.decode(), expected_html) # 記得reponse要先decode才能比對
+        # ===remove forms (因有csrf field的關係)
+        decoded_respone = html_tool.forms_remover(response.content.decode())
+        expected_html = html_tool.forms_remover(expected_html)
+
+        self.assertEqual(decoded_respone, expected_html) # 記得reponse要先decode才能比對
 
     def test_home_page_can_save_a_POST_request(self):
         request = HttpRequest()
