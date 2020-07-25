@@ -19,10 +19,9 @@ class HomePageTest(TestCase):
         self.assertEqual(found.func, home_page)
 
     def test_homepage_returns_correct_html(self):
-        request = HttpRequest()
-        response = home_page(request)
-
         # ==============若直接對 response 的 contenct bytes 做解讀
+        # request = HttpRequest()
+        # response = home_page(request)
         # self.assertTrue(response.content.startswith(b'<html>'))
         # self.assertIn(b'<title>To-Do list</title>', response.content)
         # self.assertTrue(response.content.endswith(b'</html>'))
@@ -31,20 +30,23 @@ class HomePageTest(TestCase):
         expected_html = render_to_string('home.html') # 建立ground truth!
         request = HttpRequest()
         response = home_page(request)
-        # ===remove forms (因有csrf field的關係)
+
+        # should remove forms (因有csrf token field 的關係, 不這麼做的話會出錯...)
+        # decoded_respone = response.content.decode()
         decoded_respone = html_tool.forms_remover(response.content.decode())
         expected_html = html_tool.forms_remover(expected_html)
 
         self.assertEqual(decoded_respone, expected_html) # 記得reponse要先decode才能比對
 
     def test_home_page_can_save_a_POST_request(self):
+        target_str = 'A new list item'
         request = HttpRequest()
         request.method = "POST"
-        request.POST['item_text'] = 'A new list item'
+        request.POST['item_text'] = target_str
         response = home_page(request)
 
         # 沒加入 request 的話會沒有 csrf token
-        expected_html = render_to_string('home.html', {'new_text_item': 'A new list item'})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
+        expected_html = render_to_string('home.html', {'new_text_item': target_str})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
         # 就算加入了request, csrf token val.仍會每次render都給不一樣, so得將form remove from 我們的test
         decoded_respone = html_tool.forms_remover(response.content.decode())
         expected_html = html_tool.forms_remover(expected_html)
