@@ -58,12 +58,17 @@ class HomePageTest(TestCase):
 
         self.assertEqual(decoded_respone, expected_html) # 記得reponse要先decode才能比對
 
-    def test_home_page_can_save_a_POST_request(self):
+    def test_home_page_can_save_a_POST_request_n_render_correctly(self):
         target_str = 'A new list item'
         request = HttpRequest()
         request.method = "POST"
         request.POST['item_text'] = target_str
         response = home_page(request)
+
+        # 檢查有正確塞到db中
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, target_str)
 
         # 沒加入 request 的話會沒有 csrf token
         expected_html = render_to_string('home.html', {'new_text_item': target_str})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
@@ -73,3 +78,27 @@ class HomePageTest(TestCase):
 
         self.assertEqual(decoded_respone, expected_html)
 
+
+
+    def test_home_page_only_saves_items_when_neccessary(self):
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
+
+
+
+    def test_home_page_can_save_a_POST_request_should_redirect_first(self):
+        target_str = 'A new list item'
+        request = HttpRequest()
+        request.method = "POST"
+        request.POST['item_text'] = target_str
+        response = home_page(request)
+
+        # 檢查有正確塞到db中
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, target_str)
+
+        # check if after POST, can redirect rather than rander directly
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')

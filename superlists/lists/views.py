@@ -1,13 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from lists.models import Item
 
 # Create your views here.
 def home_page(request):
     if(request.method == 'POST'):
-        # return request.POST['item_text']
-        return render(request, 'home.html',
-                      {
-                          'new_text_item': request.POST.get('item_text', "")
-                      })
+        # 將資料存入db
+        Item.objects.create(text=request.POST.get('item_text', "")) # 可以直接create 這樣就不用 new then save()
+        return redirect('/')
 
     return render(request, 'home.html')
