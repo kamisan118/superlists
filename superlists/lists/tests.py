@@ -34,6 +34,8 @@ class SmokeTest(TestCase):
         self.assertNotEqual(1 + 1, 3)
 
 class HomePageTest(TestCase):
+    target_str = 'A new list item'
+
     def test_root_url_resolves_to_home_page_view(self):
         found = resolve('/')
         self.assertEqual(found.func, home_page)
@@ -58,20 +60,27 @@ class HomePageTest(TestCase):
 
         self.assertEqual(decoded_respone, expected_html) # 記得reponse要先decode才能比對
 
-    def test_home_page_can_save_a_POST_request_n_render_correctly(self):
-        target_str = 'A new list item'
+    def save_new_item_through_post_request(self):
         request = HttpRequest()
         request.method = "POST"
-        request.POST['item_text'] = target_str
+        request.POST['item_text'] = self.target_str
         response = home_page(request)
+        return response
+
+    def test_home_page_can_save_a_POST_request(self):
+        response = self.save_new_item_through_post_request()
 
         # 檢查有正確塞到db中
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
-        self.assertEqual(new_item.text, target_str)
+        self.assertEqual(new_item.text, self.target_str)
+        return response
+
+    def test_home_page_can_save_a_POST_request_n_render_correctly(self):
+        response = self.test_home_page_can_save_a_POST_request()
 
         # 沒加入 request 的話會沒有 csrf token
-        expected_html = render_to_string('home.html', {'new_text_item': target_str})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
+        expected_html = render_to_string('home.html', {'new_text_item': self.target_str})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
         # 就算加入了request, csrf token val.仍會每次render都給不一樣, so得將form remove from 我們的test
         decoded_respone = html_tool.forms_remover(response.content.decode())
         expected_html = html_tool.forms_remover(expected_html)
@@ -88,16 +97,7 @@ class HomePageTest(TestCase):
 
 
     def test_home_page_can_save_a_POST_request_should_redirect_first(self):
-        target_str = 'A new list item'
-        request = HttpRequest()
-        request.method = "POST"
-        request.POST['item_text'] = target_str
-        response = home_page(request)
-
-        # 檢查有正確塞到db中
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, target_str)
+        response = self.save_new_item_through_post_request()
 
         # check if after POST, can redirect rather than rander directly
         self.assertEqual(response.status_code, 302)
