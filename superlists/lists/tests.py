@@ -21,12 +21,12 @@ class ItemModelTest(TestCase):
         second_item.save()
 
         saved_items = Item.objects.all()
-        self.assertEqual((saved_items.count(), 2))
+        self.assertEqual(saved_items.count(), 2)
 
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
-        self.assertEqual(first_saved_item, first_item.text)
-        self.assertEqual(second_saved_item, second_item.text)
+        self.assertEqual(first_saved_item.text, first_item.text)
+        self.assertEqual(second_saved_item.text, second_item.text)
 
 
 class SmokeTest(TestCase):
