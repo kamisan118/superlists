@@ -9,4 +9,5 @@ def home_page(request):
         Item.objects.create(text=request.POST.get('item_text', "")) # 可以直接create 這樣就不用 new then save()
         return redirect('/')
 
-    return render(request, 'home.html')
+    items = Item.objects.all()
+    return render(request, 'home.html', { 'items': items})

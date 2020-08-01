@@ -76,25 +76,11 @@ class HomePageTest(TestCase):
         self.assertEqual(new_item.text, self.target_str)
         return response
 
-    def test_home_page_can_save_a_POST_request_n_render_correctly(self):
-        response = self.test_home_page_can_save_a_POST_request()
-
-        # 沒加入 request 的話會沒有 csrf token
-        expected_html = render_to_string('home.html', {'new_text_item': self.target_str})  # 把 home.html 給 render, 並且pass in params. 然後render 成 str (用以比較final html)
-        # 就算加入了request, csrf token val.仍會每次render都給不一樣, so得將form remove from 我們的test
-        decoded_respone = html_tool.forms_remover(response.content.decode())
-        expected_html = html_tool.forms_remover(expected_html)
-
-        self.assertEqual(decoded_respone, expected_html)
-
-
 
     def test_home_page_only_saves_items_when_neccessary(self):
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
-
-
 
     def test_home_page_can_save_a_POST_request_should_redirect_first(self):
         response = self.save_new_item_through_post_request()
@@ -102,3 +88,15 @@ class HomePageTest(TestCase):
         # check if after POST, can redirect rather than rander directly
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['location'], '/')
+
+
+    def test_home_page_display_all_list_items(self):
+        Item.objects.create(text='itemy 1') # 可以直接create 這樣就不用 new then save()
+        Item.objects.create(text='itemy 2')  # 可以直接create 這樣就不用 new then save()
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertIn('itemy 1', response.content.decode())
+        self.assertIn('itemy 2', response.content.decode())
+
