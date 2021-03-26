@@ -4,7 +4,9 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
-class NewVisitorTest(LiveServerTestCase): # 用 `LiveServerTestCase` 來做 Django FT 的話, 會自動幫開 server 以及 產生 alias db for FT ifself.
+# 用 `LiveServerTestCase` 來做 Django FT 的話,
+# 會自動幫開 server 以及 產生 alias db for FT ifself.
+class NewVisitorTest(LiveServerTestCase):
     def setUp(self) -> None:
         self.browser = webdriver.Firefox(log_path=r"C:\DBoxs\prim\Dropbox\repo\tdd-lern-proj\p1\geckodriver.log")
 

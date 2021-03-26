@@ -64,7 +64,7 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         request.method = "POST"
         request.POST['item_text'] = self.target_str
-        response = home_page(request)
+        response = home_page(request) # 直接塞 req. 進去 view 就可以獲得 response
         return response
 
     def test_home_page_can_save_a_POST_request(self):
@@ -72,10 +72,9 @@ class HomePageTest(TestCase):
 
         # 檢查有正確塞到db中
         self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
+        new_item = Item.objects.first() # Item 是個自訂的 model 隨時可以叫出來做資料的存儲
         self.assertEqual(new_item.text, self.target_str)
         return response
-
 
     def test_home_page_only_saves_items_when_neccessary(self):
         request = HttpRequest()
