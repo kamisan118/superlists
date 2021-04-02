@@ -25,7 +25,7 @@ class NewVisitorTest(LiveServerTestCase):
     def test_can_start_list_and_retrieve_it_later(self):
 
         # Edith has heard about a cool new online to-do app. She goes to check out its homepage.
-        self.browser.get(self.live_server_url) # 不用自己指定測試用的 url 了
+        self.browser.get(self.live_server_url) # 不用自己指定測試用的 url & port 了
 
         # She notices the page title and header mention to-do list
         self.assertIn('To-Do', self.browser.title)
