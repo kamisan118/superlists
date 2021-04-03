@@ -81,21 +81,37 @@ class HomePageTest(TestCase):
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_home_page_can_save_a_POST_request_should_redirect_first(self):
+    # def test_home_page_can_save_a_POST_request_should_redirect_first(self):
+    def test_home_page_redirects_after_POST(self):
         response = self.save_new_item_through_post_request()
 
         # check if after POST, can redirect rather than rander directly
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world')
+
+    # # TDD book-p.118 說要刪掉但我決定不刪 因為她是比較基礎的在DjangoTestClient jump in 前的 更基礎的寫法
+    # def test_home_page_display_all_list_items(self):
+    #     Item.objects.create(text='itemy 1') # 可以直接create 這樣就不用 new then save()
+    #     Item.objects.create(text='itemy 2')  # 可以直接create 這樣就不用 new then save()
+    #
+    #     request = HttpRequest()
+    #     response = home_page(request)
+    #
+    #     self.assertIn('itemy 1', response.content.decode())
+    #     self.assertIn('itemy 2', response.content.decode())
 
 
-    def test_home_page_display_all_list_items(self):
+# 利用 DjangoTestClient, 同時測試 view, model, url mapping (比個別測試要來的更方便..., 是Djago當中特有的寫法)
+class ListViewTest(TestCase):
+    def test_display_all_items(self):
         Item.objects.create(text='itemy 1') # 可以直接create 這樣就不用 new then save()
         Item.objects.create(text='itemy 2')  # 可以直接create 這樣就不用 new then save()
 
-        request = HttpRequest()
-        response = home_page(request)
+        response = self.client.get('/lists/the-only-list-in-the-world')
 
-        self.assertIn('itemy 1', response.content.decode())
-        self.assertIn('itemy 2', response.content.decode())
+        self.assertContains(response, 'itemy 1')
+        self.assertContains(response, 'itemy 2')
 
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world')
+        self.assertTemplateUsed(response, 'lists.html')

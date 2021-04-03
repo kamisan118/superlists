@@ -21,7 +21,7 @@ class NewVisitorTest(LiveServerTestCase):
         # 更簡潔的寫法
         self.assertIn(row_text, [row.text for row in rows])
 
-    # 記得要先開啟django servre才能跑
+    # 記得要先開啟django server才能跑
     def test_can_start_list_and_retrieve_it_later(self):
 
         # Edith has heard about a cool new online to-do app. She goes to check out its homepage.
@@ -40,9 +40,11 @@ class NewVisitorTest(LiveServerTestCase):
         # When she hits enter, the page updates, and now the page lists
         # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
         edith_list_url = self.browser.current_url
-        self.assertRegex(edith_list_url, '/lists/.+')
-        self.check_for_row_in_list_table('1. Buy peacock feathers')
+        # self.assertRegex(edith_list_url, '/lists/.+')
+        self.assertTrue(edith_list_url.__contains__("/lists/the-only-list-in-the-world"))
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
         # 沒裝這個的話會碰到 `selenium.common.exceptions.StaleElementReferenceException`
         # 因為你撈到前一個 page 的 id, 但 page 被 refresh 結果就變成 DOM 消失 找不到
         time.sleep(1)

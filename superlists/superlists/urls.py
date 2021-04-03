@@ -24,6 +24,8 @@ django.setup()
 import lists.views
 
 urlpatterns = [
-    # url(r'^admin/', admin.site.urls),
-    url('', view=lists.views.home_page, name="home"),
+    # url('', view=lists.views.home_page, name="home"), # ALL. 所有都跑這邊
+    # url(r'^admin/', admin.site.urls), # # admin page only
+    url(r'^$', view=lists.views.home_page, name="home"), # a specific page; here: root only
+    url(r'^lists/the-only-list-in-the-world', view=lists.views.view_list, name="view_list"),
 ]
