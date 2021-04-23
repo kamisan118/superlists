@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>To-Do lists</h1>
-    <form method="POST" action="/"> {% comment %}你必須透過action明講你要post to where--request要發到哪個網址{% endcomment %}
+    <form method="POST" action="/lists/new"> {% comment %}你必須透過action明講你要post to where--request要發到哪個網址{% endcomment %}
         <input name="item_text" id="id_new_item", placeholder="Enter a to-do item">
         {% comment %}
             若加入 {% csrf_token %} 會讓test過不去...不論是用django test跑 還是unittest跑 都一樣結果,
