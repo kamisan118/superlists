@@ -42,9 +42,9 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
         edith_list_url = self.browser.current_url
-        # self.assertRegex(edith_list_url, '/lists/.+')
-        self.assertTrue(edith_list_url.__contains__("/lists/the-only-list-in-the-world"))
+        self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
+
         # 沒裝這個的話會碰到 `selenium.common.exceptions.StaleElementReferenceException`
         # 因為你撈到前一個 page 的 id, 但 page 被 refresh 結果就變成 DOM 消失 找不到
         time.sleep(1)

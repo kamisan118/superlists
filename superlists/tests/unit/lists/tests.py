@@ -111,26 +111,30 @@ class NewListTest(TestCase):
     # def test_home_page_can_save_a_POST_request_should_redirect_first(self):
     def test_redirects_after_POST(self):
         response = self.save_new_item_through_post_request()
+        list_ = List.objects.first()
 
         # check if after POST, can redirect rather than rander directly
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
+        self.assertEqual(response['location'], '/lists/%d/' % (list_.id,))
 
 
 # 利用 DjangoTestClient, 同時測試 view, model, url mapping (比個別測試要來的更方便..., 是Djago當中特有的寫法)
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        list_ = List.objects.create()
+        response = self.client.get('/lists/%d/' % (list_.id,))
         self.assertTemplateUsed(response, 'lists.html')
 
-    def test_display_all_items(self):
+    def test_display_all_items_for_that_list(self):
         list_ = List.objects.create()
 
         Item.objects.create(text='itemy 1', list=list_) # 可以直接create 這樣就不用 new then save()
         Item.objects.create(text='itemy 2', list=list_)  # 可以直接create 這樣就不用 new then save()
 
-        response = self.client.get('/lists/the-only-list-in-the-world/')
+        response = self.client.get('/lists/%d/' % (list_.id,))
 
         self.assertContains(response, 'itemy 1')
         self.assertContains(response, 'itemy 2')
+        self.assertNotContains(response, 'other list itemy 1')
+        self.assertNotContains(response, 'other list itemy 2')

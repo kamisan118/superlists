@@ -27,6 +27,10 @@ urlpatterns = [
     # url('', view=lists.views.home_page, name="home"), # ALL. 所有都跑這邊
     # url(r'^admin/', admin.site.urls), # # admin page only
     url(r'^$', view=lists.views.home_page, name="home"), # a specific page; here: root only
-    url(r'^lists/the-only-list-in-the-world/$', view=lists.views.view_list, name="view_list"),
+
+    # (.+) 這種寫法會match anything, 然後變成 a argument 一併傳到 view_list() 中
+    # trailing `/` for queries, not for actions
+    url(r'^lists/(.+)/$', view=lists.views.view_list, name="view_list"),
+    # trailing `/` for queries, don't do it for actions
     url(r'^lists/new$', view=lists.views.new_list, name="new_list"),
 ]
