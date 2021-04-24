@@ -119,6 +119,11 @@ class NewListTest(TestCase):
 
 # 利用 DjangoTestClient, 同時測試 view, model, url mapping (比個別測試要來的更方便..., 是Djago當中特有的寫法)
 class ListViewTest(TestCase):
+
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'lists.html')
+
     def test_display_all_items(self):
         list_ = List.objects.create()
 
@@ -129,7 +134,3 @@ class ListViewTest(TestCase):
 
         self.assertContains(response, 'itemy 1')
         self.assertContains(response, 'itemy 2')
-
-    def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list-in-the-world/')
-        self.assertTemplateUsed(response, 'lists.html')
