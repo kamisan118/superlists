@@ -120,8 +120,10 @@ class NewListTest(TestCase):
 # 利用 DjangoTestClient, 同時測試 view, model, url mapping (比個別測試要來的更方便..., 是Djago當中特有的寫法)
 class ListViewTest(TestCase):
     def test_display_all_items(self):
-        Item.objects.create(text='itemy 1') # 可以直接create 這樣就不用 new then save()
-        Item.objects.create(text='itemy 2')  # 可以直接create 這樣就不用 new then save()
+        list_ = List.objects.create()
+
+        Item.objects.create(text='itemy 1', list=list_) # 可以直接create 這樣就不用 new then save()
+        Item.objects.create(text='itemy 2', list=list_)  # 可以直接create 這樣就不用 new then save()
 
         response = self.client.get('/lists/the-only-list-in-the-world/')
 
