@@ -41,8 +41,9 @@ class NewVisitorTest(LiveServerTestCase):
         # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
+
         edith_list_url = self.browser.current_url
-        self.assertRegex(edith_list_url, '/lists/.+')
+        self.assertRegex(edith_list_url, '/lists/.+/')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # 沒裝這個的話會碰到 `selenium.common.exceptions.StaleElementReferenceException`

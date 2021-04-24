@@ -8,7 +8,10 @@ def home_page(request):
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
-    items = Item.objects.get(list=list_)
+    try:
+        items = Item.objects.filter(list=list_)
+    except Exception as ep:
+        items = []
     return render(request, 'lists.html', {'items': items})
 
 def new_list(request):
