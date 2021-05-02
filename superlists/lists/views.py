@@ -24,3 +24,14 @@ def new_list(request):
         ) # 可以直接create 這樣就不用 new then save()
         return redirect('/lists/%d/' % (list_.id,))
 
+
+def add_item(request, list_id):
+    if (request.method == 'POST'):
+        list_ = List.objects.get(id=list_id)
+
+        Item.objects.create(
+            text=request.POST['item_text'],
+            list=list_
+        )
+
+        return redirect('/lists/%d/' % (list_.id, ))

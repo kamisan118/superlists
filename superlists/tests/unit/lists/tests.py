@@ -90,7 +90,7 @@ class HomePageTest(TestCase):
 class NewListTest(TestCase):
     target_str = 'A new list item'
 
-    def save_new_item_through_post_request(self):
+    def save_new_list_through_post_request(self):
         response = self.client.post(
             '/lists/new',
             data={
@@ -100,7 +100,7 @@ class NewListTest(TestCase):
         return response
 
     def test_saving_a_POST_request(self):
-        response = self.save_new_item_through_post_request()
+        response = self.save_new_list_through_post_request()
 
         # 檢查有正確塞到db中
         self.assertEqual(Item.objects.count(), 1)
@@ -110,10 +110,10 @@ class NewListTest(TestCase):
 
     # def test_home_page_can_save_a_POST_request_should_redirect_first(self):
     def test_redirects_after_POST(self):
-        response = self.save_new_item_through_post_request()
+        response = self.save_new_list_through_post_request()
         list_ = List.objects.first()
 
-        # check if after POST, can redirect rather than rander directly
+        # check if after POST, can redirect rather than render directly
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['location'], '/lists/%d/' % (list_.id,))
 
@@ -123,10 +123,13 @@ class NewItemTest(TestCase):
         other_list = List.objects.create()
         correct_list = List.objects.create()
 
-        self.client.post(
-            'lists/%d/add_item' % (correct_list.id,),
-            data={'item_text', 'A new item for an existing list'}
+        response = self.client.post(
+            '/lists/%d/add_item' % (correct_list.id,),
+            data={
+                'item_text': 'A new item for an existing list'
+            }
         )
+        self.assertNotEqual(response.status_code, 404)
 
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
@@ -138,11 +141,16 @@ class NewItemTest(TestCase):
         correct_list = List.objects.create()
 
         response = self.client.post(
-            'lists/%d/add_item' % (correct_list.id,),
-            data={'item_text', 'A new item for an existing list'}
+            '/lists/%d/add_item' % (correct_list.id,),
+            data={
+                'item_text': 'A new item for an existing list'
+            }
         )
 
-        self.assertRedirects(response, 'list/%d/' % (correct_list.id,))
+        # check if after POST, can redirect rather than render directly
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/lists/%d/' % (correct_list.id,))
+        # self.assertRedirects(response, 'list/%d/' % (correct_list.id,))
 
 
 # 利用 DjangoTestClient, 同時測試 view, model, url mapping (比個別測試要來的更方便..., 是Djago當中特有的寫法)
