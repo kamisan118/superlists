@@ -173,3 +173,13 @@ class ListViewTest(TestCase):
         self.assertContains(response, 'itemy 2')
         self.assertNotContains(response, 'other list itemy 1')
         self.assertNotContains(response, 'other list itemy 2')
+
+
+    def test_passes_correct_list_to_template(self):
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        response = self.client.get('/lists/%d/' % (correct_list.id,))
+
+        # response.context, 就是 view function 傳進去給 template 的那個 dict
+        self.assertEqual(response.context['list'], correct_list)
+
