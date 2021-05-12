@@ -1,5 +1,6 @@
 import unittest
 from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
@@ -106,6 +107,38 @@ class NewVisitorTest(LiveServerTestCase):
         # She visits that URL - her to-do list is still there.
 
         # Satisfied, she goes back to sleep
+
+# 用 `StaticLiveServerTestCase` 來做 Django FT 的話, 才能夠認得到static files...
+class NewVisitorStaticTest(StaticLiveServerTestCase):
+    def setUp(self) -> None:
+        self.browser = webdriver.Firefox(log_path=r"C:\DBoxs\prim\Dropbox\repo\tdd-lern-proj\p1\geckodriver.log")
+
+    def tearDown(self) -> None:
+        self.browser.quit()
+
+    def test_layout_and_styling(self):
+        # Edith goes to the home page
+        self.browser.get(self.live_server_url)
+        # 限制windows size (才能夠比較accurate的做location-based的assertertion...)
+        self.browser.set_window_size(1024, 768)
+
+        # She notice the input box is nicely centered.
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=10 # almost, 的tolerance
+        )
+
+        # She starts a new list and see the input is nicely centered there too,
+        inputbox.send_keys('testing\n')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=10 # almost, 的tolerance
+        )
+
+
 
 
 if __name__ == '__main__':
