@@ -4,11 +4,28 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+import sys
 
 # 用 `LiveServerTestCase` 來做 Django FT 的話,
 # 會自動幫開 server 以及 產生 alias db for FT ifself.
 class NewVisitorTest(LiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.server_url = None
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                break
+        super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super.tearDownClass()
+
     def setUp(self) -> None:
+        if(self.server_url == None):
+            self.server_url = self.live_server_url
         self.browser = webdriver.Firefox(log_path=r"C:\DBoxs\prim\Dropbox\repo\tdd-lern-proj\p1\geckodriver.log")
 
     def tearDown(self) -> None:
@@ -26,7 +43,7 @@ class NewVisitorTest(LiveServerTestCase):
     def test_can_start_list_and_retrieve_it_later(self):
 
         # Edith has heard about a cool new online to-do app. She goes to check out its homepage.
-        self.browser.get(self.live_server_url) # 不用自己指定測試用的 url & port 了
+        self.browser.get(self.server_url) # 不用自己指定測試用的 url & port 了
 
         # She notices the page title and header mention to-do list
         self.assertIn('To-Do', self.browser.title)
@@ -71,7 +88,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Francis visits the home page. There's no sign of Edith's list
         # list
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
@@ -110,7 +127,18 @@ class NewVisitorTest(LiveServerTestCase):
 
 # 用 `StaticLiveServerTestCase` 來做 Django FT 的話, 才能夠認得到static files...
 class NewVisitorStaticTest(StaticLiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.server_url = None
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                break
+        super().setUpClass()
+
     def setUp(self) -> None:
+        if(self.server_url == None):
+            self.server_url = self.live_server_url
         self.browser = webdriver.Firefox(log_path=r"C:\DBoxs\prim\Dropbox\repo\tdd-lern-proj\p1\geckodriver.log")
 
     def tearDown(self) -> None:
@@ -118,7 +146,7 @@ class NewVisitorStaticTest(StaticLiveServerTestCase):
 
     def test_layout_and_styling(self):
         # Edith goes to the home page
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         # 限制windows size (才能夠比較accurate的做location-based的assertertion...)
         self.browser.set_window_size(1024, 768)
 
