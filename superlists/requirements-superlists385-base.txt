@@ -1,0 +1,2 @@
+# 下面這是 superlists385 需要的, 裝完以後請再去裝 pmlib385的requirement.txt
+django==3.1.1
