@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import pm_local_config
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", __file__)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -21,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*quk)$=n-_++uynlv2(vwaa!q(qh2+fex48-q%&dukxbnu!0s*'
+SECRET_KEY = pm_local_config.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,7 +81,7 @@ WSGI_APPLICATION = 'superlists.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, '../../database/db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, pm_local_config.DB_FILEPATH),
     }
 }
 
