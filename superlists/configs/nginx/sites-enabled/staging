@@ -7,6 +7,6 @@ server {
     }
 
     location / {
-        proxy_pass http://localhost:8000;
+        proxy_pass http://unix:/tmp/superlists-staging.sock;
     }
 }
