@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn server for superlist-staging
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ubuntu
+WorkingDirectory=/home/ubuntu/sites/staging/source/superlists
+ExecStart=/home/ubuntu/sites/staging/virtualenv/bin/gunicorn --bind unix:/tmp/superlists-staging.sock superlists.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
