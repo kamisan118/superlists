@@ -1,9 +1,9 @@
 server {
     listen 80;
-    server_name 172.31.73.90;
+    server_name 0.0.0.0;
 
     location /static {
-        alias /home/ubuntu/sites/staging/static;
+        alias /root/sites/staging/static;
     }
 
     location / {

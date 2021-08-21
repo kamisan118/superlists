@@ -27,8 +27,8 @@ SECRET_KEY = pm_local_config.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [] # ISTATIC_ROOTf ALLOWED_HOSTS is empty and DEBUG=True, subdomains of localhost were allowed.
+# ALLOWED_HOSTS = ['*'] # A list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent HTTP Host header attacks, which are possible even under many seemingly-safe web server configurations. A value of '*' will match anything
 
 
 # Application definition
