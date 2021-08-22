@@ -11,4 +11,4 @@ WorkingDirectory=/root/sites/staging/source/superlists
 ExecStart=/root/sites/staging/virtualenv/pmlib385/bin/gunicorn --bind unix:/tmp/superlists-staging.sock superlists.wsgi:application
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.targeta
